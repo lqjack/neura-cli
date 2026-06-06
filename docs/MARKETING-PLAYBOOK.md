@@ -11,7 +11,7 @@
 |----|------|
 | monorepo `bun run neura` | ✅ 保留，真源未删 |
 | 独立 public 仓 | ✅ [lqjack/neura-cli](https://github.com/lqjack/neura-cli) |
-| npm 包 | ✅ `@neuradesk/cli@0.1.0`（建议发 `0.1.1` 含默认 gateway 修复） |
+| npm 包 | ✅ `@neuradesk/cli@0.1.1`（默认 `gateway.datapro.asia`） |
 | 营销文档 | ✅ `docs/GTM` · `DEMO` · `MARKETING-COPY` · `OWNER-CHECKLIST` |
 | Demo 脚本 | ✅ `demo/01` · `02` · `03` · GitHub Action 示例 |
 | 同步命令 | ✅ `neura-cli:sync` · `verify` · `push` · `publish` |
@@ -49,7 +49,7 @@ W10–W12 L2b 交叉引流   Desk welcome CLI 卡 · 黑客松表单 · 可选 P
 | # | 动作 | 负责人 | 产出 |
 |---|------|--------|------|
 | 1 | 确认 GitHub repo Description + Topics | Owner | `cli` `ai` `devtools` `neuradesk` |
-| 2 | npm 发 `0.1.1`（含默认 `gateway.datapro.asia`） | Dev | `npm i -g @neuradesk/cli` 即通 |
+| 2 | npm 发 `0.1.1`（含默认 `gateway.datapro.asia`） | Dev | ☑ 已完成 |
 | 3 | GitHub License 字段选 MIT | Owner | 与 LICENSE 文件一致 |
 | 4 | README 加 npm badge（已有则跳过） | Dev | Stars 可见性 |
 | 5 | Desk `/welcome/guide?product=cli` 确认可访问 | Dev | homepage 不 404 |
@@ -175,7 +175,7 @@ W10–W12 L2b 交叉引流   Desk welcome CLI 卡 · 黑客松表单 · 可选 P
 | **asciinema 账号** | README 秒懂 embed |
 | **匿名案例截图授权** | 垂直 demo 真实感 |
 | **MIT License 法律确认** | GitHub License 字段 |
-| **npm 0.1.1 publish** | 新用户默认 gateway 正确 | ☑ 发版脚本 |
+| **npm 0.1.1 publish** | 新用户默认 gateway 正确 | ☑ 已发布 |
 
 可选：`cli.neuradesk.ai` CNAME · Product Hunt 账号 · Design Partner 案例（COMM-06）。
 
