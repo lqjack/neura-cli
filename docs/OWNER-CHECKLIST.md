@@ -10,12 +10,12 @@
 | # | 资源 | 用途 | 状态 |
 |---|------|------|------|
 | 1 | **GitHub public repo** | [github.com/lqjack/neura-cli](https://github.com/lqjack/neura-cli) | ☑ 已确认 |
-| 2 | **npm scope** | `@neuradesk/cli` · org `neuradesk` | ☑ 已发布 v0.1.0 |
+| 2 | **npm scope** | `@neuradesk/cli` · org `neuradesk` | ☑ v0.1.1（默认 gateway.datapro.asia） |
 | 3 | **开源 License** | MIT（与 [LICENSE](../LICENSE) 一致） | ☐ **请确认法律文本** |
 | 4 | **Demo API Key** | `NEURA_API_KEY=gw-…` · demo 录屏 / CI | ☑ monorepo `config/neura-cli.env` |
 | 5 | **生产 NEURA_SERVER_URL** | 默认 `https://gateway.datapro.asia` | ☑ 已确认 |
 | 6 | **npm publish token** | env `NPM_ACCESS_TOKEN` · CI secret 同名 | ☑ 本地 env |
-| 7 | **GitHub PAT** | `NEURA_CLI_SYNC_GITHUB_TOKEN` · sync push 自动化 | ☐ **请提供**（若需 CI 自动 push 独立仓） |
+| 7 | **GitHub PAT** | `NEURA_CLI_GITHUB_TOKEN`（`~/.bashrc`）或 `NEURA_CLI_SYNC_GITHUB_TOKEN` · sync push | ☐ **请提供**（无 SSH 时） |
 
 ---
 
@@ -38,7 +38,7 @@
 NEURA_CLI_STANDALONE_REPO=../neura-cli
 NEURA_CLI_DEMO_API_KEY=gw-…
 NPM_ACCESS_TOKEN=npm_…
-NEURA_CLI_SYNC_GITHUB_TOKEN=ghp_…   # repo push，可选
+NEURA_CLI_GITHUB_TOKEN=ghp_…        # ~/.bashrc 推荐名；脚本亦认 NEURA_CLI_SYNC_GITHUB_TOKEN
 ```
 
 ---
@@ -47,7 +47,7 @@ NEURA_CLI_SYNC_GITHUB_TOKEN=ghp_…   # repo push，可选
 
 | 你提供 | 我们执行 |
 |--------|----------|
-| `NEURA_CLI_SYNC_GITHUB_TOKEN` + repo 已 create | `bun run neura-cli:push` → 独立仓首次 public push |
+| `NEURA_CLI_GITHUB_TOKEN` / `NEURA_CLI_SYNC_GITHUB_TOKEN` + repo 已 create | `bun run neura-cli:push` → 独立仓 public push |
 | Demo key + asciinema 账号 | 录屏 embed → README |
 | Logo SVG + OG 1200×630 | README badge · social cards |
 | 案例授权截图 | 掘金 / PH 素材 |

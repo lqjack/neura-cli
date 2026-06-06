@@ -37,7 +37,7 @@ llm-gateway/
 
 ```bash
 export NEURA_CLI_STANDALONE_REPO=../neura-cli
-export NEURA_CLI_SYNC_GITHUB_TOKEN=ghp_…   # 可选
+export NEURA_CLI_GITHUB_TOKEN=ghp_…   # 或 NEURA_CLI_SYNC_GITHUB_TOKEN（~/.bashrc）
 export NPM_ACCESS_TOKEN=npm_…              # publish 用
 ```
 

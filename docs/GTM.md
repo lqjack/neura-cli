@@ -94,6 +94,7 @@
 |------|------|
 | [DEMO.md](./DEMO.md) | 三条标准 demo + asciinema |
 | [MARKETING-COPY.md](./MARKETING-COPY.md) | GitHub / PH / HN / 掘金全文模板 |
+| [MARKETING-PLAYBOOK.md](./MARKETING-PLAYBOOK.md) | **后续营销步骤 · 12 周节奏 · 发版 SOP** |
 | [OWNER-CHECKLIST.md](./OWNER-CHECKLIST.md) | **需 Owner 另外提供的资源** |
 | [SYNC.md](./SYNC.md) | monorepo 同步闭环 |
 

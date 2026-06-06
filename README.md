@@ -119,6 +119,7 @@ Set `NEURA_PLUGIN_BUNDLE_ROOT` to a checkout of [llm-gateway plugins](https://gi
 | [docs/MARKETING-COPY.md](./docs/MARKETING-COPY.md) | GitHub / PH / HN / 掘金 templates |
 | [docs/OWNER-CHECKLIST.md](./docs/OWNER-CHECKLIST.md) | **Resources you must provide** |
 | [docs/SYNC.md](./docs/SYNC.md) | Monorepo sync loop |
+| [docs/MARKETING-PLAYBOOK.md](./docs/MARKETING-PLAYBOOK.md) | **后续营销步骤 · 12 周节奏 · 发版 SOP** |
 | [CONTRIBUTING.md](./CONTRIBUTING.md) | Where to send PRs |
 
 ## Development (monorepo maintainers)

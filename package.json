@@ -1,6 +1,6 @@
 {
   "name": "@neuradesk/cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "NeuraCLI — send business goals from your terminal; NeuraServer runs domain SOP + multi-agent execution",
   "repository": {
     "type": "git",
