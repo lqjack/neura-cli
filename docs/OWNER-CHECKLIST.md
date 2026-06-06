@@ -25,7 +25,7 @@
 |---|------|------|------|
 | 8 | **品牌资产** | CLI logo SVG · npm badge · OG image 1200×630 | ☐ **需提供** |
 | 9 | **asciinema.org 账号** | 上传 `demo/01-send-mcn.sh` 录屏 embed README | ☐ 可选 |
-| 10 | **匿名案例授权** | Demo 输出可公开截图（MCN / 法务 / 软件） | ☐ 营销用 |
+| 10 | **MCN Desk 截图** | `docs/assets/mcn/mcn01–04.png` · README / 掘金 | ☑ 已提供 |
 | 11 | **Product Hunt 账号** | CLI 独立条目 | ☐ 可选 |
 | 12 | **域名** | `cli.neuradesk.ai` → GitHub | ☐ 可选 |
 

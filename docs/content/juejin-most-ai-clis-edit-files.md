@@ -58,16 +58,34 @@ neura send "MCN: analyze competitor hooks for skincare vertical"
 
 ---
 
-## Demo（建议配图 / 录屏）
+## Demo（终端 + Desk 截图）
 
-仓库内一键脚本：
+**终端录屏：**
+
+[![asciicast](https://asciinema.org/a/LzQWeelwBW7E2TCQ.svg)](https://asciinema.org/a/LzQWeelwBW7E2TCQ)
 
 ```bash
 git clone https://github.com/lqjack/neura-cli.git
 cd neura-cli && ./demo/01-send-mcn.sh
 ```
 
-录屏 embed：见 README asciinema 链接。
+**Desk 侧 MCN 五步闭环（与 CLI 同一 collab 路径）：**
+
+![选择运营模式](https://raw.githubusercontent.com/lqjack/neura-cli/main/docs/assets/mcn/mcn01.png)
+
+*Step 1 — 选择新建 / 延续模式（MCN 达人孵化工作台）*
+
+![因子决策面板](https://raw.githubusercontent.com/lqjack/neura-cli/main/docs/assets/mcn/mcn02.png)
+
+*Step 2–3 — 因子决策：BGM、脚本基调、场景、话题、人物*
+
+![创作方案](https://raw.githubusercontent.com/lqjack/neura-cli/main/docs/assets/mcn/mcn03.png)
+
+*Step 4 — 生成方案：设定集合、创作指导、口播脚本（mcn-sop）*
+
+![效果反馈闭环](https://raw.githubusercontent.com/lqjack/neura-cli/main/docs/assets/mcn/mcn04.png)
+
+*Step 5 — 反馈闭环：完播率 / 点赞率沉淀运营画像*
 
 ---
 

@@ -49,6 +49,17 @@ neura send \
 
 **录屏要点：** 终端 poll 行出现 `Intent` / `Plugin`；stdout 末尾 `finalReport`；复制 `deskPath` 打开 NeuraDesk。
 
+**Desk 截图（仓库 `docs/assets/mcn/`）：**
+
+| 文件 | 展示 |
+|------|------|
+| `mcn01.png` | 选择运营模式（新建 / 延续） |
+| `mcn02.png` | 因子决策面板 |
+| `mcn03.png` | 创作方案（口播脚本 · 创作指导） |
+| `mcn04.png` | 效果反馈闭环 |
+
+Monorepo 真源：`llm-gateway/docs/mcn01.png` … `mcn04.png`
+
 ### Demo 2 — 软件交付 + repo
 
 ```bash

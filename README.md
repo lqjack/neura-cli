@@ -65,6 +65,19 @@ Config file (optional): `~/.config/neura/cli.env` — see [.env.example](./.env.
 asciinema play demo/01-send-mcn.cast   # offline replay
 ```
 
+### MCN vertical — Desk 工作台（`neura send` 同一 Server 路径）
+
+终端发 Goal 后，业务同学在 NeuraDesk 审阅 MCN 五步闭环（内容智能副驾）：
+
+| Step | Screenshot | 说明 |
+|------|------------|------|
+| 1 | ![MCN 选择模式](./docs/assets/mcn/mcn01.png) | 新建 / 延续运营模式 |
+| 2 | ![MCN 因子决策](./docs/assets/mcn/mcn02.png) | BGM · 脚本基调 · 场景 · 话题 · 人物 |
+| 3 | ![MCN 创作方案](./docs/assets/mcn/mcn03.png) | 设定集合 · 创作指导 · 口播脚本 |
+| 4 | ![MCN 反馈闭环](./docs/assets/mcn/mcn04.png) | 完播率 / 点赞率 → 沉淀运营画像 |
+
+Demo 脚本：[`demo/01-send-mcn.sh`](./demo/01-send-mcn.sh) · 工作台示例：[gateway.datapro.asia/collab](https://gateway.datapro.asia/collab)
+
 ## Core commands
 
 ```bash

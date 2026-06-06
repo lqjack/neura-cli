@@ -69,6 +69,8 @@ W10–W12 L2b 交叉引流   Desk welcome CLI 卡 · 黑客松表单 · 可选 P
 | 5 | 掘金长文草稿 | ☑ [juejin-most-ai-clis-edit-files.md](./content/juejin-most-ai-clis-edit-files.md) |
 | 6 | 推特/X 一条 | ☐ 待 Owner 发 |
 
+**MCN Desk 截图：** `docs/assets/mcn/mcn01–04.png`（真源 `llm-gateway/docs/mcn*.png`）已 embed README + 掘金草稿。
+
 **KPI 基线：** GitHub Stars、npm weekly downloads、首次 `neura send` 成功数（Desk 侧 CLI source 注册）。
 
 ---
