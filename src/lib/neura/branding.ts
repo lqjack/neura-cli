@@ -28,3 +28,6 @@ export const NEURA_PRODUCT_PATHS: Record<NeuraProductId, string[]> = {
 /** npm package for NeuraRunner (legacy name retained). */
 export const NEURA_RUNNER_PACKAGE = "@llm-gateway/runner"
 export const NEURA_RUNNER_BIN = "llm-gateway-runner"
+
+/** Default NeuraDesk / NeuraServer base URL for NeuraCLI (override with NEURA_SERVER_URL). */
+export const NEURA_DEFAULT_GATEWAY_URL = "https://gateway.datapro.asia"

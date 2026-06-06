@@ -1,0 +1,34 @@
+# Example: run NeuraCLI send from GitHub Actions
+# Secrets: NEURA_API_KEY (required), NEURA_SERVER_URL (optional)
+name: neura-send-smoke
+
+on:
+  workflow_dispatch:
+    inputs:
+      goal:
+        description: Business goal text
+        required: true
+        default: "Summarize one-line collab smoke test from CI"
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install
+      - name: neura send --json
+        env:
+          NEURA_API_KEY: ${{ secrets.NEURA_API_KEY }}
+          NEURA_SERVER_URL: ${{ secrets.NEURA_SERVER_URL || 'https://gateway.datapro.asia' }}
+        run: |
+          OUT=$(bun run neura send "${{ github.event.inputs.goal }}" --json --timeout 300 --poll 3)
+          echo "$OUT" | head -c 4000
+          echo "$OUT" | bun -e "
+            let s='';process.stdin.on('data',d=>s+=d);
+            process.stdin.on('end',()=>{
+              const j=JSON.parse(s);
+              const id=j.submit?.taskId??j.taskId;
+              if(!id) { console.error('missing taskId'); process.exit(1); }
+              console.log('taskId='+id);
+            })"

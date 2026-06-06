@@ -1,3 +1,5 @@
+import { NEURA_DEFAULT_GATEWAY_URL } from "@/lib/neura/branding"
+
 export function resolveNeuraServerUrl(override?: string): string {
   const trimmed = override?.trim()
   const raw =
@@ -5,7 +7,7 @@ export function resolveNeuraServerUrl(override?: string): string {
     process.env.NEURADESK_URL?.trim() ||
     process.env.NEURA_SERVER_URL?.trim() ||
     process.env.NEXT_PUBLIC_APP_URL?.trim() ||
-    "http://127.0.0.1:3000"
+    NEURA_DEFAULT_GATEWAY_URL
   return raw.replace(/\/$/, "")
 }
 

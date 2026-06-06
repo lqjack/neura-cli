@@ -1,5 +1,8 @@
 # NeuraCLI
 
+[![npm version](https://img.shields.io/npm/v/@neuradesk/cli.svg)](https://www.npmjs.com/package/@neuradesk/cli)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+
 Most AI CLIs edit files.
 
 **Neura sends goals.**
@@ -13,6 +16,8 @@ export NEURA_API_KEY=gw-your-key-from-settings
 neura send "MCN: analyze competitor hooks for skincare vertical"
 ```
 
+> **中文：** 在终端把业务 Goal 交给 NeuraOS 执行，不是又一个改文件的 AI CLI。
+
 ## Why not another coding CLI?
 
 | | Claude Code / Codex | NeuraCLI |
@@ -25,10 +30,13 @@ neura send "MCN: analyze competitor hooks for skincare vertical"
 ## Quick start
 
 ```bash
-# Requires Bun >= 1.1 (https://bun.sh)
+# Global install (recommended)
+npm i -g @neuradesk/cli
+neura send "Review our API release checklist" --timeout 120
+
+# Or clone this repo (requires Bun >= 1.1)
 git clone https://github.com/lqjack/neura-cli.git
-cd neura-cli
-bun install
+cd neura-cli && bun install
 bun run neura send "Review our API release checklist" --timeout 120
 ```
 
@@ -37,10 +45,24 @@ bun run neura send "Review our API release checklist" --timeout 120
 | Variable | Description |
 |----------|-------------|
 | `NEURA_API_KEY` | Bearer `gw-…` from NeuraDesk settings |
-| `NEURA_SERVER_URL` | Gateway base URL (default `http://127.0.0.1:3000`) |
+| `NEURA_SERVER_URL` | Gateway base URL (default `https://gateway.datapro.asia`; local dev: `http://127.0.0.1:3000`) |
 | `GITHUB_TOKEN` | Optional — `neura repo ensure owner/repo` |
 
-Config file (optional): `~/.config/neura/cli.env`
+Config file (optional): `~/.config/neura/cli.env` — see [.env.example](./.env.example).
+
+## Demos
+
+| Script | What it shows |
+|--------|----------------|
+| [`demo/01-send-mcn.sh`](./demo/01-send-mcn.sh) | MCN business goal · ~90s |
+| [`demo/02-send-repo-software.sh`](./demo/02-send-repo-software.sh) | `--repo owner/app` · ~120s |
+| [`demo/03-send-json-ci.sh`](./demo/03-send-json-ci.sh) | `--json` for CI · ~60s |
+
+```bash
+./demo/01-send-mcn.sh
+```
+
+Record for README: `asciinema rec -c "./demo/01-send-mcn.sh"` — see [docs/DEMO.md](./docs/DEMO.md).
 
 ## Core commands
 
@@ -53,16 +75,6 @@ neura task action <taskId> slack.post_summary --connector slack
 
 Full help: `neura --help`
 
-## Demos
-
-```bash
-./demo/01-send-mcn.sh
-./demo/02-send-repo-software.sh
-./demo/03-send-json-ci.sh
-```
-
-Record for README: `asciinema rec -c "./demo/01-send-mcn.sh"`
-
 ## Architecture
 
 NeuraCLI is a **thin client**. It does not embed LLMs or plugins.
@@ -74,6 +86,10 @@ Terminal: neura send "…"
     → GET /api/cli/tasks/:id (poll)
     → stdout finalReport + deskPath deep link
 ```
+
+## CI integration
+
+Example GitHub Action: [`demo/github-action-neura-send.yml`](./demo/github-action-neura-send.yml)
 
 ## Optional: repo + connectors
 
@@ -94,13 +110,26 @@ Set `NEURA_PLUGIN_BUNDLE_ROOT` to a checkout of [llm-gateway plugins](https://gi
 | [NeuraRunner](https://github.com/lqjack/llm-gateway/tree/main/packages/runner) | Local sandbox — `neura send --use-runner` |
 | [Plugin SDK](https://github.com/lqjack/llm-gateway/blob/main/plugins/PLUGIN_DEVELOPMENT_GUIDE.md) | Domain SOP authoring |
 
-## Development (monorepo)
+## Docs
+
+| Doc | Description |
+|------|-------------|
+| [docs/GTM.md](./docs/GTM.md) | Marketing · PCRRSA · channels |
+| [docs/DEMO.md](./docs/DEMO.md) | Demo runbook · asciinema |
+| [docs/MARKETING-COPY.md](./docs/MARKETING-COPY.md) | GitHub / PH / HN / 掘金 templates |
+| [docs/OWNER-CHECKLIST.md](./docs/OWNER-CHECKLIST.md) | **Resources you must provide** |
+| [docs/SYNC.md](./docs/SYNC.md) | Monorepo sync loop |
+| [CONTRIBUTING.md](./CONTRIBUTING.md) | Where to send PRs |
+
+## Development (monorepo maintainers)
 
 Sources sync from [llm-gateway](https://github.com/lqjack/llm-gateway):
 
 ```bash
 cd llm-gateway
 bun run neura-cli:sync -- ../neura-cli
+bun run neura-cli:push      # git push standalone repo
+bun run neura-cli:publish   # npm @neuradesk/cli
 ```
 
 Do not hand-edit `src/` in this repo — run sync from monorepo.
@@ -111,6 +140,6 @@ MIT — see [LICENSE](./LICENSE)
 
 ## Links
 
-- [GTM & narrative (internal)](./docs/GTM.md)
+- [npm @neuradesk/cli](https://www.npmjs.com/package/@neuradesk/cli)
 - [NeuraDesk welcome guide](https://gateway.datapro.asia/welcome/guide)
 - [Issues](https://github.com/lqjack/neura-cli/issues)

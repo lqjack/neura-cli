@@ -120,7 +120,7 @@ ${NEURA.cli}
 
 NeuraDesk analyzes your message (Intent → Router → Workflow → Execution) and auto-invokes
 the right plugin on the server. Auth: NEURA_API_KEY (Bearer gw-…) or NEURA_SESSION.
-Server: NEURA_SERVER_URL (default http://127.0.0.1:3000).
+Server: NEURA_SERVER_URL (default https://gateway.datapro.asia).
 
 Default .txt = full plain transcript (no headers). Use --detailed-txt for per-message metadata.
 With --evidence, output includes a case header (auto-filled contact/dates; override via --case-title, --case-id, --parties, --notes).

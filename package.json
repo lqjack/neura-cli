@@ -6,7 +6,7 @@
     "type": "git",
     "url": "git+https://github.com/lqjack/neura-cli.git"
   },
-  "homepage": "https://gateway.datapro.asia/welcome/guide",
+  "homepage": "https://gateway.datapro.asia/welcome/guide?product=cli",
   "bugs": {
     "url": "https://github.com/lqjack/neura-cli/issues"
   },
