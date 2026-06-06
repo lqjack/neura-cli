@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
-# Load NEURA_* for demos — reuses llm-gateway config/neura-cli.env when present.
+# Load NEURA_* for demos — reuses llm-gateway config/neura-cli.env for API key.
 set -euo pipefail
 
-if [[ -n "${NEURA_API_KEY:-}" && -n "${NEURA_SERVER_URL:-}" ]]; then
-  echo "[setup-env] NEURA_* already set"
+if [[ -n "${NEURA_API_KEY:-}" ]]; then
+  export NEURA_SERVER_URL="${NEURA_SERVER_URL:-${NEURA_DEMO_SERVER_URL:-https://gateway.datapro.asia}}"
+  echo "[setup-env] NEURA_API_KEY already set; server=$NEURA_SERVER_URL"
   exit 0
 fi
 
@@ -11,8 +12,13 @@ CANDIDATES=(
   "${NEURA_CLI_ENV:-}"
   "$HOME/llm-gateway/config/neura-cli.env"
   "$HOME/Desktop/llm-gateway/config/neura-cli.env"
-  "$(cd "$(dirname "$0")/../../.." && pwd)/config/neura-cli.env"
 )
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+MONOREPO_ENV="$(cd "$SCRIPT_DIR/../../.." 2>/dev/null && pwd)/config/neura-cli.env"
+if [[ -f "$MONOREPO_ENV" ]]; then
+  CANDIDATES+=("$MONOREPO_ENV")
+fi
 
 for f in "${CANDIDATES[@]}"; do
   [[ -n "$f" && -f "$f" ]] || continue
@@ -20,10 +26,14 @@ for f in "${CANDIDATES[@]}"; do
   # shellcheck disable=SC1090
   source "$f"
   set +a
+  # Demo scripts hit production gateway (key verified there); override local dev URL from env file.
+  if [[ -z "${NEURA_KEEP_LOCAL_SERVER:-}" ]]; then
+    export NEURA_SERVER_URL="${NEURA_DEMO_SERVER_URL:-https://gateway.datapro.asia}"
+  fi
   echo "[setup-env] loaded $f"
-  echo "[setup-env] NEURA_SERVER_URL=${NEURA_SERVER_URL:-<unset>}"
+  echo "[setup-env] NEURA_SERVER_URL=$NEURA_SERVER_URL"
   exit 0
 done
 
-echo "Set NEURA_API_KEY + NEURA_SERVER_URL, or place config at ~/llm-gateway/config/neura-cli.env"
+echo "Set NEURA_API_KEY, or place config at ~/llm-gateway/config/neura-cli.env"
 exit 1
