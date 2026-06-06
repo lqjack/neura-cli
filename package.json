@@ -1,0 +1,53 @@
+{
+  "name": "@neuradesk/cli",
+  "version": "0.1.0",
+  "description": "NeuraCLI — send business goals from your terminal; NeuraServer runs domain SOP + multi-agent execution",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lqjack/neura-cli.git"
+  },
+  "homepage": "https://gateway.datapro.asia/welcome/guide",
+  "bugs": {
+    "url": "https://github.com/lqjack/neura-cli/issues"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "demo/",
+    "docs/",
+    "tsconfig.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "bin": {
+    "neura": "bin/neura.js"
+  },
+  "type": "module",
+  "engines": {
+    "bun": ">=1.1.0",
+    "node": ">=18"
+  },
+  "keywords": [
+    "neura",
+    "neura-cli",
+    "neuradesk",
+    "ai",
+    "collab",
+    "sop",
+    "cli",
+    "goal-driven"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.6.1",
+    "yaml": "^2.8.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "neura": "bun src/cli.ts",
+    "test": "bun test src/",
+    "verify": "bun src/cli.ts help"
+  }
+}
