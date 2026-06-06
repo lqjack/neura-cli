@@ -5,7 +5,7 @@ set -euo pipefail
 if [[ -n "${NEURA_API_KEY:-}" ]]; then
   export NEURA_SERVER_URL="${NEURA_SERVER_URL:-${NEURA_DEMO_SERVER_URL:-https://gateway.datapro.asia}}"
   echo "[setup-env] NEURA_API_KEY already set; server=$NEURA_SERVER_URL"
-  exit 0
+  return 0 2>/dev/null || exit 0
 fi
 
 CANDIDATES=(
@@ -26,14 +26,13 @@ for f in "${CANDIDATES[@]}"; do
   # shellcheck disable=SC1090
   source "$f"
   set +a
-  # Demo scripts hit production gateway (key verified there); override local dev URL from env file.
   if [[ -z "${NEURA_KEEP_LOCAL_SERVER:-}" ]]; then
     export NEURA_SERVER_URL="${NEURA_DEMO_SERVER_URL:-https://gateway.datapro.asia}"
   fi
   echo "[setup-env] loaded $f"
   echo "[setup-env] NEURA_SERVER_URL=$NEURA_SERVER_URL"
-  exit 0
+  return 0 2>/dev/null || exit 0
 done
 
 echo "Set NEURA_API_KEY, or place config at ~/llm-gateway/config/neura-cli.env"
-exit 1
+return 1 2>/dev/null || exit 1

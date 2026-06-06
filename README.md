@@ -52,6 +52,8 @@ Config file (optional): `~/.config/neura/cli.env` — see [.env.example](./.env.
 
 ## Demos
 
+[![asciicast](https://asciinema.org/a/LzQWeelwBW7E2TCQ.svg)](https://asciinema.org/a/LzQWeelwBW7E2TCQ)
+
 | Script | What it shows |
 |--------|----------------|
 | [`demo/01-send-mcn.sh`](./demo/01-send-mcn.sh) | MCN business goal · ~90s |
@@ -60,9 +62,8 @@ Config file (optional): `~/.config/neura/cli.env` — see [.env.example](./.env.
 
 ```bash
 ./demo/01-send-mcn.sh
+asciinema play demo/01-send-mcn.cast   # offline replay
 ```
-
-Record for README: `asciinema rec -c "./demo/01-send-mcn.sh"` — see [docs/DEMO.md](./docs/DEMO.md).
 
 ## Core commands
 
@@ -120,6 +121,8 @@ Set `NEURA_PLUGIN_BUNDLE_ROOT` to a checkout of [llm-gateway plugins](https://gi
 | [docs/OWNER-CHECKLIST.md](./docs/OWNER-CHECKLIST.md) | **Resources you must provide** |
 | [docs/SYNC.md](./docs/SYNC.md) | Monorepo sync loop |
 | [docs/MARKETING-PLAYBOOK.md](./docs/MARKETING-PLAYBOOK.md) | **后续营销步骤 · 12 周节奏 · 发版 SOP** |
+| [docs/GATEWAY-URLS.md](./docs/GATEWAY-URLS.md) | Production URL map · `?product=cli` |
+| [docs/content/juejin-most-ai-clis-edit-files.md](./docs/content/juejin-most-ai-clis-edit-files.md) | 掘金长文草稿 |
 | [CONTRIBUTING.md](./CONTRIBUTING.md) | Where to send PRs |
 
 ## Development (monorepo maintainers)
@@ -142,5 +145,5 @@ MIT — see [LICENSE](./LICENSE)
 ## Links
 
 - [npm @neuradesk/cli](https://www.npmjs.com/package/@neuradesk/cli)
-- [NeuraDesk welcome guide](https://gateway.datapro.asia/welcome/guide)
+- [NeuraDesk welcome guide (CLI)](https://gateway.datapro.asia/welcome/guide?product=cli)
 - [Issues](https://github.com/lqjack/neura-cli/issues)
