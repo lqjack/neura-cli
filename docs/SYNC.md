@@ -29,6 +29,7 @@ llm-gateway/
 | `bun run neura-cli:sync` | 生成 `packages/neura-cli/src/` |
 | `bun run neura-cli:sync -- ../neura-cli` | 同步到 sibling 独立 git 仓 |
 | `bun run neura-cli:verify` | smoke：help · demo 文件 |
+| `bun run neura-cli:verify:func` | **发布前功能门禁**（单测 + gateway + CLI auth） |
 | `bun run neura-cli:pack` | `npm pack` 预检 |
 | `bun run neura-cli:publish` | verify + `npm publish`（需 `NPM_ACCESS_TOKEN`） |
 | `bun run neura-cli:push` | sync + git commit/push 独立仓 |

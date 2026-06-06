@@ -194,13 +194,33 @@ W10–W12 L2b 交叉引流   Desk welcome CLI 卡 · 黑客松表单 · 可选 P
 
 ## 7. 发版日 SOP（每次 CLI 功能上线）
 
+**发布 / 营销前必须先过功能门禁：**
+
+```bash
+bun run neura-cli:verify:func
+# 可选：真实 send 冒烟（需有效 NEURA_API_KEY）
+NEURA_CLI_VERIFY_SEND=1 bun run neura-cli:verify:func
+```
+
+门禁包含：sync · monorepo + standalone 单测 · `--help` · 默认 `gateway.datapro.asia` · Gateway 连通 · CLI auth（`POST /api/cli/send → 400`）。  
+`neura-cli:publish` 与 `neura-cli:push` **已自动调用**此门禁。
+
+| 检查项 | 要求 |
+|--------|------|
+| 单测 | monorepo + standalone 全绿 |
+| 默认 Gateway | 未设 env 时为 `https://gateway.datapro.asia` |
+| 生产 auth | `config/neura-cli.env` 中 `NEURA_API_KEY=gw-…` 对 **gateway.datapro.asia** 有效 |
+| 可选 live send | `NEURA_CLI_VERIFY_SEND=1` |
+
+仅文档/sync、无有效 key 时临时跳过 auth：`NEURA_CLI_VERIFY_SKIP_AUTH=1`（**不可**用于对外 demo 录屏前）。
+
 ```text
 1. llm-gateway 合并 main
-2. bun run neura-cli:sync -- ../neura-cli
-3. bun run neura-cli:verify && bun run verify:func（monorepo）
-4. bump packages/neura-cli/package.json version
-5. bun run neura-cli:push
-6. bun run neura-cli:publish
+2. bun run neura-cli:verify:func（必过；营销录屏 / npm / GitHub 之前）
+3. bump packages/neura-cli/package.json version
+4. bun run neura-cli:push          # 内含 verify:func
+5. bun run neura-cli:publish       # 内含 verify:func
+6. bun run verify:func（monorepo 全量，CLI 变更时建议）
 7. GitHub Release + 社交帖（模板 MARKETING-COPY.md）
 8. 有录屏变化则重录 asciinema → README embed → 再 push
 ```
