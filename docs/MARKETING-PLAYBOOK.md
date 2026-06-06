@@ -48,11 +48,11 @@ W10–W12 L2b 交叉引流   Desk welcome CLI 卡 · 黑客松表单 · 可选 P
 
 | # | 动作 | 负责人 | 产出 |
 |---|------|--------|------|
-| 1 | 确认 GitHub repo Description + Topics | Owner | `cli` `ai` `devtools` `neuradesk` |
-| 2 | npm 发 `0.1.1`（含默认 `gateway.datapro.asia`） | Dev | ☑ 已完成 |
-| 3 | GitHub License 字段选 MIT | Owner | 与 LICENSE 文件一致 |
-| 4 | README 加 npm badge（已有则跳过） | Dev | Stars 可见性 |
-| 5 | Desk `/welcome/guide?product=cli` 确认可访问 | Dev | homepage 不 404 |
+| 1 | 确认 GitHub repo Description + Topics | Owner | ☑ `cli` `ai` `devtools` `neuradesk` |
+| 2 | npm 发 `0.1.1` | Dev | ☑ 已完成 |
+| 3 | GitHub License 字段选 MIT | Owner | ☐ 待确认 |
+| 4 | README npm badge | Dev | ☑ |
+| 5 | Desk `/welcome/guide?product=cli` | Dev | ☑ URL 200 · CLI 卡需 gateway deploy |
 
 **DoD：** 陌生人 clone / npm install 后，仅需 `NEURA_API_KEY` 即可 `neura send` 成功。
 
@@ -60,12 +60,14 @@ W10–W12 L2b 交叉引流   Desk welcome CLI 卡 · 黑客松表单 · 可选 P
 
 ### W1 — 第一条 Demo 录屏
 
-| # | 动作 | 依赖 |
+| # | 动作 | 状态 |
 |---|------|------|
-| 1 | 跑 `./demo/01-send-mcn.sh` 录 asciinema | `NEURA_API_KEY` · [DEMO.md](./DEMO.md) |
-| 2 | embed 进 [README](../README.md) Hero 下方 | asciinema.org 账号 |
-| 3 | `bun run neura-cli:push` 更新独立仓 | token 或 SSH |
-| 4 | 推特/X 一条：反转句 + embed 链接 | [MARKETING-COPY.md](./MARKETING-COPY.md) § Twitter |
+| 1 | `./demo/01-send-mcn.sh` 录 asciinema | ☑ [LzQWeelwBW7E2TCQ](https://asciinema.org/a/LzQWeelwBW7E2TCQ) |
+| 2 | embed README | ☑ |
+| 3 | `neura-cli:push` | ☑ |
+| 4 | GitHub Release v0.1.1（PCRRSA） | ☑ [Release](https://github.com/lqjack/neura-cli/releases/tag/v0.1.1) |
+| 5 | 掘金长文草稿 | ☑ [juejin-most-ai-clis-edit-files.md](./content/juejin-most-ai-clis-edit-files.md) |
+| 6 | 推特/X 一条 | ☐ 待 Owner 发 |
 
 **KPI 基线：** GitHub Stars、npm weekly downloads、首次 `neura send` 成功数（Desk 侧 CLI source 注册）。
 
