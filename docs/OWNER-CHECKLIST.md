@@ -50,7 +50,7 @@ NEURA_CLI_GITHUB_TOKEN=ghp_…        # ~/.bashrc 推荐名；脚本亦认 NEURA
 | `NEURA_CLI_GITHUB_TOKEN` / `NEURA_CLI_SYNC_GITHUB_TOKEN` + repo 已 create | `bun run neura-cli:push` → 独立仓 public push |
 | Demo key + asciinema 账号 | 录屏 embed → README |
 | Logo SVG + OG 1200×630 | README badge · social cards |
-| 案例授权截图 | 掘金 / PH 素材 |
+| MCN Desk 截图（`docs/mcn*.png`） | ☑ README · DEMO · 掘金草稿已 embed |
 | 确认 License MIT | GitHub license 字段 + npm |
 
 ---
