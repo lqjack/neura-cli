@@ -1,4 +1,7 @@
 import { describe, expect, test } from "bun:test"
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "fs"
+import { tmpdir } from "os"
+import path from "path"
 import {
   isAudioFileMessage,
   parseFilenameFromContent,
@@ -37,9 +40,21 @@ describe("wx-media-path", () => {
   })
 
   test("listCachedVideosInAttach finds attach/V mp4 files", () => {
-    const root = readWxStorageRoot()
-    if (!root) return
-    const videos = listCachedVideosInAttach(root, "2026-05")
-    if (videos.length) expect(videos[0]).toContain("/V/")
+    const root = mkdtempSync(path.join(tmpdir(), "wx-media-test-"))
+    try {
+      const mp4 = path.join(root, "msg", "attach", "2026-05", "abc", "V", "12345.mp4")
+      mkdirSync(path.dirname(mp4), { recursive: true })
+      writeFileSync(mp4, "")
+      const otherMonth = path.join(root, "msg", "attach", "2026-04", "abc", "V", "99999.mp4")
+      mkdirSync(path.dirname(otherMonth), { recursive: true })
+      writeFileSync(otherMonth, "")
+
+      const videos = listCachedVideosInAttach(root, "2026-05")
+      expect(videos).toHaveLength(1)
+      expect(videos[0]).toContain(`${path.sep}V${path.sep}`)
+      expect(videos[0]).toContain("2026-05")
+    } finally {
+      rmSync(root, { recursive: true, force: true })
+    }
   })
 })

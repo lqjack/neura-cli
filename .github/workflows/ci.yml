@@ -8,6 +8,10 @@ on:
   release:
     types: [published]
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   verify:
     runs-on: ubuntu-latest
@@ -23,14 +27,29 @@ jobs:
     if: github.event_name == 'release'
     needs: verify
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "24"
           registry-url: "https://registry.npmjs.org"
+      - run: npm install -g npm@latest
       - run: bun install
-      - run: npm publish --access public
+      - name: Publish @neuradesk/cli
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+          NPM_ACCESS_TOKEN: ${{ secrets.NPM_ACCESS_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [[ -n "${NPM_ACCESS_TOKEN:-}" ]]; then
+            echo "//registry.npmjs.org/:_authToken=${NPM_ACCESS_TOKEN}" > ~/.npmrc
+            npm publish --access public
+          else
+            # Trusted Publishing (OIDC) — configure on npmjs.com for lqjack/neura-cli / ci.yml
+            # Do NOT set NODE_AUTH_TOKEN when using OIDC.
+            unset NODE_AUTH_TOKEN || true
+            npm publish --access public --provenance
+          fi

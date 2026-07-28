@@ -7,7 +7,7 @@ Most AI CLIs edit files.
 
 **Neura sends goals.**
 
-Send a business goal from your terminal. [NeuraDesk](https://gateway.datapro.asia) runs domain SOP + multi-agent collab on the server — same pipeline as `/collab`.
+Send a business goal from your terminal. [NeuraDesk](https://gateway.datapro.asia?utm_source=github&utm_medium=readme&utm_campaign=neura-cli) runs domain SOP + multi-agent collab on the server — same pipeline as `/collab`.
 
 ```bash
 npm i -g @neuradesk/cli
@@ -76,7 +76,7 @@ asciinema play demo/01-send-mcn.cast   # offline replay
 | 3 | ![MCN 创作方案](./docs/assets/mcn/mcn03.png) | 设定集合 · 创作指导 · 口播脚本 |
 | 4 | ![MCN 反馈闭环](./docs/assets/mcn/mcn04.png) | 完播率 / 点赞率 → 沉淀运营画像 |
 
-Demo 脚本：[`demo/01-send-mcn.sh`](./demo/01-send-mcn.sh) · 工作台示例：[gateway.datapro.asia/collab](https://gateway.datapro.asia/collab)
+Demo 脚本：[`demo/01-send-mcn.sh`](./demo/01-send-mcn.sh) · 工作台示例：[gateway.datapro.asia/collab](https://gateway.datapro.asia/collab?utm_source=github&utm_medium=readme&utm_campaign=neura-cli)
 
 ## Core commands
 
@@ -120,9 +120,22 @@ Set `NEURA_PLUGIN_BUNDLE_ROOT` to a checkout of [llm-gateway plugins](https://gi
 
 | Product | Role |
 |---------|------|
-| [NeuraDesk](https://gateway.datapro.asia) | Web console — approval, plugins, quant |
-| [NeuraRunner](https://github.com/lqjack/llm-gateway/tree/main/packages/runner) | Local sandbox — `neura send --use-runner` |
+| [NeuraDesk](https://gateway.datapro.asia?utm_source=github&utm_medium=readme&utm_campaign=neura-cli) | Web console — approval, plugins, quant |
+| [NeuraRunner](https://github.com/lqjack/llm-gateway/tree/main/packages/runner) | Local sandbox — OpenCLI **wx** + **openclaw-zero** on connect |
 | [Plugin SDK](https://github.com/lqjack/llm-gateway/blob/main/plugins/PLUGIN_DEVELOPMENT_GUIDE.md) | Domain SOP authoring |
+
+### OpenCLI (local wx + openclaw-zero)
+
+NeuraCLI can drive the same OpenCLI hub that NeuraRunner installs on `/computers`:
+
+```bash
+neura opencli status
+neura opencli setup                 # npm i -g opencli + wx; start openclaw-zero
+neura opencli wx doctor
+neura opencli openclaw-zero start
+# wx subcommands also fall back to `opencli wx` when native `wx` is missing
+neura wx watch --chat NAME
+```
 
 ## Docs
 
@@ -158,5 +171,5 @@ MIT — see [LICENSE](./LICENSE)
 ## Links
 
 - [npm @neuradesk/cli](https://www.npmjs.com/package/@neuradesk/cli)
-- [NeuraDesk welcome guide (CLI)](https://gateway.datapro.asia/welcome/guide?product=cli)
+- [NeuraDesk welcome guide (CLI)](https://gateway.datapro.asia/welcome/guide?product=cli&utm_source=github&utm_medium=readme&utm_campaign=neura-cli)
 - [Issues](https://github.com/lqjack/neura-cli/issues)

@@ -3,7 +3,8 @@
  * NeuraCLI — thin client: send messages to NeuraDesk; server handles intent, routing, plugins.
  *
  *   bun run neura send "小红书增长：分析竞品笔记"
- *   bun run neura wx watch …   (local wx-cli only)
+ *   bun run neura wx watch …   (local wx / opencli wx)
+ *   bun run neura opencli status | setup
  */
 import "./load-env"
 import "dotenv/config"
@@ -39,6 +40,12 @@ import {
   type MediaTranscriptRow,
 } from "@/lib/neura-cli/wx-media-transcript"
 import { listCachedVideosInAttach, readWxStorageRoot } from "@/lib/neura-cli/wx-media-path"
+import {
+  getOpencliStatus,
+  printOpencliStatus,
+  setupOpencli,
+} from "@/lib/neura-cli/opencli"
+import { spawnSync } from "node:child_process"
 import { registerCatalogService } from "@/lib/neura-cli/service-register"
 import {
   bindRepoForCli,
@@ -51,6 +58,12 @@ import {
   SOFTWARE_EVOL_OS_PLUGIN_SLUG,
 } from "@/lib/neura-cli/repo-workspace"
 import { importNeuraPluginMcp } from "@/lib/neura-cli/mcp-import-client"
+import {
+  kolGatewayDiscover,
+  kolGatewayOutreach,
+  kolGatewaySync,
+  parseKolPlatforms,
+} from "@/lib/neura-cli/kol-gateway-client"
 import { runCollabTaskAction } from "@/lib/neura-cli/task-client"
 type Parsed = { sub?: string; positional: string[]; flags: Record<string, string | boolean> }
 
@@ -118,9 +131,21 @@ ${NEURA.cli}
   wx scan-media [--chat NAME] [--month YYYY-MM]
   wx invoke-demo
 
+  opencli status                          (OpenCLI hub: wx + openclaw-zero)
+  opencli setup [--skip-wx] [--skip-openclaw]
+  opencli wx doctor | opencli openclaw-zero start
+
+  kol discover [--keyword TEXT] [--platforms xhs,douyin,bilibili] [--min-followers N] [--max-followers N]
+           [--pages N] [--no-upsert] [--app-slug ai-vlogger-bd] [--server URL] [--json]
+  kol sync --csv PATH [--dry-run] [--app-slug ai-vlogger-bd] [--server URL] [--json]
+  kol outreach [--dry-run] [--daily-limit N] [--status-filter STATUS] [--app-slug ai-vlogger-bd]
+           [--server URL] [--json]
+
+  (kol * — AVBD-20 thin CLI: Gateway /api/gateway/kol/* only; CRM = PG kollead, no local crm.db)
+
 NeuraDesk analyzes your message (Intent → Router → Workflow → Execution) and auto-invokes
 the right plugin on the server. Auth: NEURA_API_KEY (Bearer gw-…) or NEURA_SESSION.
-Server: NEURA_SERVER_URL (default https://gateway.datapro.asia).
+Server: NEURA_SERVER_URL (default https://neura.datapro.asia).
 
 Default .txt = full plain transcript (no headers). Use --detailed-txt for per-message metadata.
 With --evidence, output includes a case header (auto-filled contact/dates; override via --case-title, --case-id, --parties, --notes).
@@ -865,6 +890,61 @@ async function cmdServiceRegister(flags: Parsed["flags"]) {
   console.log(JSON.stringify(result.data, null, 2))
 }
 
+async function cmdKol(sub: string | undefined, positional: string[], flags: Parsed["flags"]) {
+  const serverUrl = str(flags, "server") || undefined
+  const appSlug = str(flags, "app-slug") || undefined
+  const json = flag(flags, "json")
+
+  if (sub === "discover") {
+    const r = await kolGatewayDiscover({
+      serverUrl,
+      appSlug,
+      keyword: str(flags, "keyword") || positional.join(" ") || undefined,
+      platforms: parseKolPlatforms(str(flags, "platforms")),
+      minFollowers: num(flags, "min-followers", NaN) || undefined,
+      maxFollowers: num(flags, "max-followers", NaN) || undefined,
+      pages: num(flags, "pages", NaN) || undefined,
+      upsert: flag(flags, "no-upsert") ? false : true,
+    })
+    if (json) console.log(JSON.stringify(r, null, 2))
+    else if (!r.ok) console.error(r.error ?? `HTTP ${r.status}`)
+    else console.log(JSON.stringify(r.data, null, 2))
+    process.exit(r.ok ? 0 : 1)
+  }
+
+  if (sub === "sync") {
+    const csvPath = str(flags, "csv") || positional[0]
+    if (!csvPath) {
+      console.error("usage: kol sync --csv PATH [--dry-run] [--app-slug ai-vlogger-bd]")
+      process.exit(1)
+    }
+    const csvText = await readFile(csvPath, "utf8")
+    const dryRun = flag(flags, "dry-run") ? true : undefined
+    const r = await kolGatewaySync({ serverUrl, appSlug, csvText, dryRun })
+    if (json) console.log(JSON.stringify(r, null, 2))
+    else if (!r.ok) console.error(r.error ?? `HTTP ${r.status}`)
+    else console.log(JSON.stringify(r.data, null, 2))
+    process.exit(r.ok ? 0 : 1)
+  }
+
+  if (sub === "outreach") {
+    const r = await kolGatewayOutreach({
+      serverUrl,
+      appSlug,
+      dryRun: flag(flags, "dry-run") ? true : undefined,
+      dailyLimit: num(flags, "daily-limit", NaN) || undefined,
+      statusFilter: str(flags, "status-filter") || undefined,
+    })
+    if (json) console.log(JSON.stringify(r, null, 2))
+    else if (!r.ok) console.error(r.error ?? `HTTP ${r.status}`)
+    else console.log(JSON.stringify(r.data, null, 2))
+    process.exit(r.ok ? 0 : 1)
+  }
+
+  console.error("usage: kol discover | sync --csv PATH | outreach")
+  process.exit(sub === "help" ? 0 : 1)
+}
+
 async function main() {
   const cmd = process.argv[2]
   const p = parseArgs(process.argv.slice(3))
@@ -932,9 +1012,45 @@ async function main() {
     return
   }
 
+  if (cmd === "kol") {
+    await cmdKol(p.sub, p.positional, p.flags)
+    return
+  }
+
+  if (cmd === "opencli") {
+    const sub = p.sub ?? "status"
+    if (sub === "status" || sub === "help") {
+      printOpencliStatus(getOpencliStatus())
+      return
+    }
+    if (sub === "setup") {
+      const status = setupOpencli({
+        skipWx: Boolean(p.flags["skip-wx"]),
+        skipOpenclaw: Boolean(p.flags["skip-openclaw"]),
+      })
+      printOpencliStatus(status)
+      return
+    }
+    if (sub === "wx") {
+      const rest = p.positional.length ? p.positional : ["doctor"]
+      const r = spawnSync("opencli", ["wx", ...rest], { stdio: "inherit", encoding: "utf8" })
+      process.exit(r.status ?? 1)
+    }
+    if (sub === "openclaw-zero") {
+      const rest = p.positional.length ? p.positional : ["start"]
+      const r = spawnSync("opencli", ["openclaw-zero", ...rest], {
+        stdio: "inherit",
+        encoding: "utf8",
+      })
+      process.exit(r.status ?? 1)
+    }
+    console.error("usage: opencli status | setup | wx … | openclaw-zero …")
+    process.exit(1)
+  }
+
   if (cmd !== "wx") {
     console.error(
-      "usage: bun scripts/neura-cli.ts send <message> | repo … | connector … | task action … | service register … | wx <subcommand>",
+      "usage: bun scripts/neura-cli.ts send <message> | repo … | connector … | kol … | opencli … | task action … | service register … | wx <subcommand>",
     )
     process.exit(1)
   }

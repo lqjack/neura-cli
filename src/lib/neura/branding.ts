@@ -10,6 +10,19 @@ export const NEURA = {
   desk: "NeuraDesk",
 } as const
 
+/** Static brand assets under `public/`. Regenerate PNGs: `bun run brand:render`. */
+export const NEURA_BRAND_ASSETS = {
+  mark: "/brand/logo-mark.svg",
+  markLight: "/brand/logo-mark-light.svg",
+  wordmark: "/brand/logo-wordmark.svg",
+  favicon: "/favicon.svg",
+  appleTouchIcon: "/apple-touch-icon.png",
+  ogImage: "/og-image.png",
+  manifest: "/site.webmanifest",
+  themeColor: "#8B5CF6",
+  pageBackground: "#0f0f11",
+} as const
+
 export type NeuraProductId = keyof typeof NEURA
 export type NeuraProduct = (typeof NEURA)[NeuraProductId]
 
@@ -30,4 +43,4 @@ export const NEURA_RUNNER_PACKAGE = "@llm-gateway/runner"
 export const NEURA_RUNNER_BIN = "llm-gateway-runner"
 
 /** Default NeuraDesk / NeuraServer base URL for NeuraCLI (override with NEURA_SERVER_URL). */
-export const NEURA_DEFAULT_GATEWAY_URL = "https://gateway.datapro.asia"
+export const NEURA_DEFAULT_GATEWAY_URL = "https://neura.datapro.asia"

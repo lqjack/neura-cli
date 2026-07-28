@@ -79,7 +79,15 @@ Standalone 补丁：
 `.github/workflows/ci.yml`：
 
 - `bun test` + `bun run verify`
-- GitHub **Release** → `npm publish`（secret `NPM_ACCESS_TOKEN`）
+- GitHub **Release** → `npm publish` `@neuradesk/cli`
+  - Prefer secret `NPM_ACCESS_TOKEN`
+  - Else npm **Trusted Publishing** (OIDC · package settings → GitHub `lqjack/neura-cli` / `ci.yml`)
+
+Monorepo (llm-gateway) workflow `.github/workflows/neura-cli-sync-publish.yml`：
+
+- path change / `workflow_dispatch` / tag `neura-cli-v*` → sync push to `lqjack/neura-cli`
+- optional Release create → triggers standalone `ci.yml` publish
+- Cross-repo push needs secret `NEURA_CLI_GITHUB_TOKEN` (PAT with `contents:write` on neura-cli)
 
 ---
 

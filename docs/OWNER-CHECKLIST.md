@@ -14,7 +14,7 @@
 | 3 | **开源 License** | MIT（与 [LICENSE](../LICENSE) 一致） | ☐ **请确认法律文本** |
 | 4 | **Demo API Key** | `NEURA_API_KEY=gw-…` · demo 录屏 / CI | ☑ monorepo `config/neura-cli.env` |
 | 5 | **生产 NEURA_SERVER_URL** | 默认 `https://gateway.datapro.asia` | ☑ 已确认 |
-| 6 | **npm publish token** | env `NPM_ACCESS_TOKEN` · CI secret 同名 | ☑ 本地 env |
+| 6 | **npm publish token** | env `NPM_ACCESS_TOKEN` · CI secret 同名；或 npm Trusted Publisher（OIDC · `ci.yml`） | ☐ **请配置其一** |
 | 7 | **GitHub PAT** | `NEURA_CLI_GITHUB_TOKEN`（`~/.bashrc`）或 `NEURA_CLI_SYNC_GITHUB_TOKEN` · sync push | ☐ **请提供**（无 SSH 时） |
 
 ---
