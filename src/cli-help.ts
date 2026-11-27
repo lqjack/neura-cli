@@ -1,0 +1,61 @@
+import { NEURA } from "./lib/neura/branding"
+
+export function printHelp() {
+  console.log(`
+${NEURA.cli}
+
+  task action <taskId> <action> [--connector ID] [--server URL] [--json]
+           (e.g. slack.post_summary — invokes user's registered MCP connector)
+
+  send <message> [--server URL] [--timeout 600] [--poll 2] [--json]
+           [--force-run] [--no-cache] [--enrich]
+           [--repo owner/repo] [--ensure-repo] [--no-save-repo] [--plugin PLUGIN_SLUG] [--use-runner] [--runner-id ID] [--work-dir PATH]
+           [--github-ci] [--github-ci-no-wait] [--github-pr] [--gitlab-mr]
+           [--notify-channel] [--no-notify-channel]
+           [--workflow-failed] [--metric KEY=NUM ...]
+
+  repo show [--repo owner/repo] [--connectors] [--plugin PLUGIN_SLUG] [--server URL] [--json]
+  repo set <owner/repo> [--branch main] [--ensure] [--plugin PLUGIN_SLUG] [--server URL]
+  repo ensure <owner/repo> [--branch main] [--work-dir PATH] [--plugin PLUGIN_SLUG]
+
+  connector list [--plugin software-evol-os-plugin]   (local connectors.yaml catalog)
+  connector status [--repo owner/repo] [--plugin PLUGIN_SLUG] [--server URL]
+  connector import [--plugin PLUGIN_SLUG] [--services slack,linear] [--server URL]
+
+  (--repo defaults workspace to ~/.neura/.workspace/{owner}-{repo})
+  (repo show / connector status use fetchCliDeliveryRepo; routing plugin still from server Intent)
+
+  service register --id SERVICE_ID [--description TEXT]
+           [--working-dir PATH] [--entry-point PATH]
+           [--schema-ref PATH] [--manifest-ref PATH]
+           [--ports '{"api":10950}'] [--no-auto-allocate] [--overwrite]
+           [--startable true|false] [--gateway URL] [--json]
+
+  wx watch [--interval 5] [--chat NAME] [--out inbox.jsonl] [--transcribe] [--once]
+  wx history-all <chat> [--transcribe] [--translate] [--txt OUT.txt] [--out full.json]
+  wx transcribe <chat> [--evidence] [--case-title TITLE] [--split-dir ./out/segments] [--txt OUT.txt]
+  wx reformat-evidence --from transcript.json [--evidence] [--case-title TITLE] [--txt OUT.txt]
+  wx media-to-text <file> [--translate] [--txt OUT.txt] [--detailed-txt]
+  wx scan-media [--chat NAME] [--month YYYY-MM]
+  wx invoke-demo
+
+  opencli status                          (OpenCLI hub: wx + openclaw-zero)
+  opencli setup [--skip-wx] [--skip-openclaw]
+  opencli wx doctor | opencli openclaw-zero start
+
+  kol discover [--keyword TEXT] [--platforms xhs,douyin,bilibili] [--min-followers N] [--max-followers N]
+           [--pages N] [--no-upsert] [--app-slug ai-vlogger-bd] [--server URL] [--json]
+  kol sync --csv PATH [--dry-run] [--app-slug ai-vlogger-bd] [--server URL] [--json]
+  kol outreach [--dry-run] [--daily-limit N] [--status-filter STATUS] [--app-slug ai-vlogger-bd]
+           [--server URL] [--json]
+
+  (kol * — AVBD-20 thin CLI: Gateway /api/gateway/kol/* only; CRM = PG kollead, no local crm.db)
+
+NeuraDesk analyzes your message (Intent → Router → Workflow → Execution) and auto-invokes
+the right plugin on the server. Auth: NEURA_API_KEY (Bearer gw-…) or NEURA_SESSION.
+Server: NEURA_SERVER_URL (default https://neura.datapro.asia).
+
+Default .txt = full plain transcript (no headers). Use --detailed-txt for per-message metadata.
+With --evidence, output includes a case header (auto-filled contact/dates; override via --case-title, --case-id, --parties, --notes).
+`)
+}
