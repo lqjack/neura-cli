@@ -16,19 +16,21 @@ const invoke = (entry, args, cwd) => {
   return { status: p.status, stdout: p.stdout, stderr: p.stderr }
 }
 
-test("positional help works without the integration modules and matches full help", () => {
+test("top-level help aliases work without the integration modules and match full help", () => {
   const temp = mkdtempSync(path.join(tmpdir(), "neura-help-"))
   try {
     mkdirSync(path.join(temp, "src/lib/neura"), { recursive: true })
     copyFileSync(path.join(root, "src/cli.ts"), path.join(temp, "src/cli.ts"))
     copyFileSync(path.join(root, "src/cli-help.ts"), path.join(temp, "src/cli-help.ts"))
     copyFileSync(path.join(root, "src/lib/neura/branding.ts"), path.join(temp, "src/lib/neura/branding.ts"))
-    const fast = invoke(path.join(temp, "src/cli.ts"), ["help"], temp)
     const full = invoke(path.join(root, "src/cli-full.ts"), ["help"], temp)
-    assert.equal(fast.status, 0)
-    assert.equal(fast.stderr, "")
-    assert.match(fast.stdout, /NeuraCLI/)
-    assert.deepEqual(fast, full)
+    assert.equal(full.status, 0)
+    assert.equal(full.stderr, "")
+    assert.match(full.stdout, /NeuraCLI/)
+    for (const arg of ["help", "--help", "-h"]) {
+      const fast = invoke(path.join(temp, "src/cli.ts"), [arg], temp)
+      assert.deepEqual(fast, full, `top-level ${arg}`)
+    }
   } finally {
     rmSync(temp, { recursive: true, force: true })
   }
@@ -37,7 +39,7 @@ test("positional help works without the integration modules and matches full hel
 test("nonfast arguments retain the full entry's behavior", () => {
   const temp = mkdtempSync(path.join(tmpdir(), "neura-full-"))
   try {
-    for (const args of [[], ["--help"], ["bogus"], ["help", "extra"]]) {
+    for (const args of [[], ["bogus"], ["send"], ["send", "--help"], ["task", "action"], ["help", "extra"], ["--help", "extra"], ["-h", "extra"]]) {
       assert.deepEqual(invoke(path.join(root, "src/cli.ts"), args, temp),
         invoke(path.join(root, "src/cli-full.ts"), args, temp))
     }
