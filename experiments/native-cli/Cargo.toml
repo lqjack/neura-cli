@@ -1,0 +1,10 @@
+[package]
+name = "neura-native-experiment"
+version = "0.0.0"
+edition = "2021"
+rust-version = "1.85"
+publish = false
+
+[profile.release]
+lto = "thin"
+strip = true
