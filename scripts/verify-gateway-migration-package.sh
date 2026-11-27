@@ -1,6 +1,22 @@
 #!/usr/bin/env bash
-# Read-only package preparation: never publishes, installs, or changes tags.
+# Offline package verification; optional install stays inside the temporary directory.
 set -eu
+smoke=false
+dependency_archives=()
+if [ "${1:-}" = "--smoke" ]; then
+  smoke=true
+  shift
+  [ "$#" -gt 0 ] || { echo 'Smoke test requires local dependency tarballs' >&2; exit 2; }
+  command -v bun >/dev/null || { echo 'Smoke test requires Bun on PATH' >&2; exit 2; }
+  for archive in "$@"; do
+    case "$archive" in *.tgz) ;; *) echo 'Expected a local .tgz dependency archive' >&2; exit 2;; esac
+    [ -f "$archive" ] || { printf 'Missing dependency archive: %s\n' "$archive" >&2; exit 2; }
+    dependency_archives+=("$(node -p 'require("node:path").resolve(process.argv[1])' -- "$archive")")
+  done
+elif [ "$#" -ne 0 ]; then
+  echo 'Usage: verify-gateway-migration-package.sh [--smoke <local-dependency.tgz> ...]' >&2
+  exit 2
+fi
 repo="$(cd -- "$(dirname -- "$0")/.." && pwd)"
 scratch="$(mktemp -d)"
 trap 'rm -rf -- "$scratch"' EXIT
@@ -24,3 +40,19 @@ for (const path of ['package.json','bin/neura.js','tsconfig.json','src/cli.ts','
 const digest = crypto.createHash('sha256').update(fs.readFileSync(archive)).digest('hex');
 console.log(JSON.stringify({ name: p.name, version: p.version, digest, files: p.files.length }));
 JS
+
+if [ "$smoke" = true ]; then
+  mkdir "$scratch/home" "$scratch/install"
+  # Clear credentials, project/user config and runtime overrides. Install only
+  # local tarballs, then exercise npm's installed bin from an unrelated cwd.
+  (
+    cd "$scratch/home"
+    env -i PATH="$PATH" HOME="$scratch/home" npm_config_cache="$scratch/cache" \
+      npm --prefix "$scratch/install" install --offline --ignore-scripts --no-audit --no-fund \
+      --no-package-lock "$scratch/one/$filename" "${dependency_archives[@]}" >&2
+    env -i PATH="$PATH" HOME="$scratch/home" "$scratch/install/node_modules/.bin/neura" help >"$scratch/help.txt"
+  )
+  grep -Fx 'NeuraCLI' "$scratch/help.txt" >/dev/null
+  grep -F '  send <message>' "$scratch/help.txt" >/dev/null
+  printf '%s\n' '{"installedCliSmoke":"passed"}'
+fi
