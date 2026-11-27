@@ -145,6 +145,48 @@ justify replacing the default runtime. Keep the lightweight TS change separate
 and require macOS/Windows checks plus equivalent non-help command contracts
 before broadening native distribution.
 
+## Linux follow-up: runtime packaging constraints
+
+Tested the exact x86-64 Linux release artifact from runtime commit
+`2d1180755861fbab450b7a61e3a8379d3ae2e4aa` (source carried unchanged by
+docs head `9f500a872e5d8a138f533e7d16517e2101a37f0e`). SHA-256:
+`6c8e52d9f8ef885cb826f67c3ed9af30710f075b0dbb7155f8fb8c39ecc79fda`.
+
+| Property | Observed |
+| --- | --- |
+| Object | ELF64 LE PIE, x86-64-baseline ISA note |
+| Program interpreter | `/lib64/ld-linux-x86-64.so.2` |
+| Direct `DT_NEEDED` | `libgcc_s.so.1`, `libc.so.6` |
+| `RPATH` / `RUNPATH` | Neither |
+| Highest versioned glibc requirement | `GLIBC_2.34` (including the undefined `__libc_start_main` reference) |
+
+To inspect an exact Linux artifact offline:
+
+```sh
+sha256sum "$artifact"
+LC_ALL=C readelf -hW "$artifact"
+LC_ALL=C readelf -nW "$artifact"
+LC_ALL=C readelf -lW "$artifact" | grep 'Requesting program interpreter'
+LC_ALL=C readelf -dW "$artifact" | grep -E 'NEEDED|RPATH|RUNPATH'
+LC_ALL=C readelf -VW "$artifact" | sed -n '/Version needs section/,$p'
+LC_ALL=C objdump -T "$artifact" | grep -F '(GLIBC_2.34)'
+```
+
+The static readback establishes a glibc symbol requirement, not support for
+every environment that reports glibc 2.34. A minimal read-only mount namespace
+on the same host contained just the binary, the same host's glibc 2.41 loader
+and libc, and its libgcc, with empty working directory/HOME and no runtime in
+PATH. Direct launch (not via an explicitly selected dynamic loader) returned
+0, empty stderr and the exact 3,251 help bytes from above. Removing
+`libgcc_s.so.1` made the same launch exit 127 with zero stdout and a missing
+library diagnostic. No new runtime was installed.
+
+Not run: glibc 2.34 floor, an older glibc distro, musl, or another OS or
+architecture. Before distributing a native Linux build, choose the supported
+libc/architecture matrix, check symbol versions on the **packaged** artifact,
+and exercise exact help/output on the oldest supported clean target without
+Node or Bun. Do not claim general Linux portability from this same-host test.
+
 ## Next decision
 
 Optimize a lazy TS entry as a credible cheaper option. If short-command
