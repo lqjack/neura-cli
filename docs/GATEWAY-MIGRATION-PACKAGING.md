@@ -8,7 +8,8 @@ bash scripts/verify-gateway-migration-package.sh
 
 The local check uses npm pack twice, in offline mode with lifecycle scripts
 disabled and an isolated cache. It requires byte-identical archives and
-checks the archive contains the CLI entry paths. For a stronger gate, put Bun
+checks the archive contains the CLI entry paths and the README-linked public
+`.env.example` and `CONTRIBUTING.md` files. For a stronger gate, put Bun
 on `PATH` and supply trusted local dependency tarballs matching the pins and
 integrities in `bun.lock` (for 0.1.2, dotenv 16.6.1 and yaml 2.9.0):
 

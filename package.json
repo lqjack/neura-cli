@@ -17,6 +17,8 @@
     "docs/",
     "tsconfig.json",
     "README.md",
+    ".env.example",
+    "CONTRIBUTING.md",
     "LICENSE"
   ],
   "bin": {

@@ -34,7 +34,7 @@ node - "$scratch/one/result.json" "$scratch/one/$filename" <<'JS'
 const [manifest, archive] = process.argv.slice(2);
 const fs = require('node:fs'), crypto = require('node:crypto');
 const [p] = JSON.parse(fs.readFileSync(manifest, 'utf8'));
-for (const path of ['package.json','bin/neura.js','tsconfig.json','src/cli.ts','src/lib/neura-cli/send-client.ts']) {
+for (const path of ['package.json','.env.example','CONTRIBUTING.md','bin/neura.js','tsconfig.json','src/cli.ts','src/lib/neura-cli/send-client.ts']) {
   if (!p.files.some(file => file.path === path)) throw Error('missing package entry: ' + path);
 }
 const digest = crypto.createHash('sha256').update(fs.readFileSync(archive)).digest('hex');
