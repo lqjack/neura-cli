@@ -273,3 +273,42 @@ exit-status compatible; the native experiment surfaces it. Keep the experiment
 optional. Before replacing the default, explicitly decide and test which
 output-error contract to support rather than silently changing it. This only
 covers the Linux `help` path; no packaging, runtime default, or release change.
+
+## Linux startup vs. the current fast help entry
+
+This is the positional `help` comparison for #2 against the actual installed
+fast path, not the older eager TypeScript baseline. Native source
+`2d1180755861fbab450b7a61e3a8379d3ae2e4aa` is byte-identical in runtime files
+to Draft #3 at `48f4821673999937faa9248bbbf8600474c786b7`. The native binary
+SHA-256 was `6c8e52d9f8ef885cb826f67c3ed9af30710f075b0dbb7155f8fb8c39ecc79fda`.
+The exact #6 checkout was `33f45a554070cb00ab3a7001ad645517fb10a0af`, tree
+`90151986214133156eabd660aa4730581ad5ef96`, and its freshly packed,
+offline npm-installed archive SHA-256 was
+`aa44debaa6d4dbf3c73a1a6a7c70bab79e992071a33c7ae8e53c02e58efa0ebb`.
+A separate sensitivity used #1 + #5 + #6, archive SHA-256
+`4ed8fa363055efc58423817b6adcfb9e50263c2960fca9979f099acab4ca6af8`.
+
+| Exact Linux process entry | p50 ms | p95 ms |
+| --- | ---: | ---: |
+| Rust, opt-in | 2.02 | 2.56 |
+| #6 installed npm launcher | 40.63 | 48.04 |
+| #6 installed source via direct Bun | 10.62 | 12.29 |
+| #1 + #5 + #6 installed npm launcher | 42.01 | 51.55 |
+| #1 + #5 + #6 installed source via direct Bun | 10.78 | 12.61 |
+
+To replay, pack and install offline as above in empty prefixes; verify the
+installed files against archive members. Compare actual
+`PREFIX/node_modules/.bin/neura help`, direct Bun with
+`PREFIX/node_modules/@neuradesk/cli/src/cli.ts help`, and the exact Rust
+binary. Use one Linux x86_64 host and CPU affinity, empty HOME/CWD, Node
+24.22.3, Bun 1.3.5, warm caches, and 15 warmups then 100 fresh timed
+processes per arm. Shuffle all arms in every round with seed 856; report
+median and nearest-rank p95 from process launch to exit, including capture.
+All 575 invocations (warmups included) exited 0 with empty stderr and exactly
+3,251 stdout bytes, same digest as above. TS `--help` is a byte-parity smoke
+only, not timed or supported by this Rust experiment.
+
+Rust p95 is 79% lower than the direct fast Bun control on this measurement,
+above #2's 30% threshold for this command only. Keep it opt-in: the tested
+glibc 2.31 failure and output-error difference above still apply. No
+migration, package publication, default switch, or cross-platform result.
