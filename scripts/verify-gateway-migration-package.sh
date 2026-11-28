@@ -43,6 +43,16 @@ JS
 
 if [ "$smoke" = true ]; then
   mkdir "$scratch/home" "$scratch/install"
+  catalog="$scratch/plugin bundles/package-smoke/assets/connectors"
+  mkdir -p "$catalog"
+  cat >"$catalog/connectors.yaml" <<'YAML'
+version: 7
+reference: offline-fixture
+connectors:
+  - id: packaged-dispatch
+    label: Packaged dispatch fixture
+    required: true
+YAML
   # Clear credentials, project/user config and runtime overrides. Install only
   # local tarballs, then exercise npm's installed bin from an unrelated cwd.
   (
@@ -51,8 +61,27 @@ if [ "$smoke" = true ]; then
       npm --prefix "$scratch/install" install --offline --ignore-scripts --no-audit --no-fund \
       --no-package-lock "$scratch/one/$filename" "${dependency_archives[@]}" >&2
     env -i PATH="$PATH" HOME="$scratch/home" "$scratch/install/node_modules/.bin/neura" help >"$scratch/help.txt"
+    # Help may bypass the full dispatcher. Exercise a real local YAML catalog.
+    env -i PATH="$PATH" HOME="$scratch/home" NEURA_PLUGIN_BUNDLE_ROOT="$scratch/plugin bundles" \
+      "$scratch/install/node_modules/.bin/neura" connector list --plugin package-smoke --json >"$scratch/catalog.json"
   )
   grep -Fx 'NeuraCLI' "$scratch/help.txt" >/dev/null
   grep -F '  send <message>' "$scratch/help.txt" >/dev/null
+  node - "$scratch/catalog.json" <<'JS'
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+assert.deepEqual(JSON.parse(fs.readFileSync(process.argv[2], 'utf8')), {
+  version: '7',
+  reference: 'offline-fixture',
+  connectors: [{
+    id: 'packaged-dispatch',
+    label: 'Packaged dispatch fixture',
+    description: '',
+    required: true,
+    requiredEnv: [],
+    envSource: 'optional',
+  }],
+});
+JS
   printf '%s\n' '{"installedCliSmoke":"passed"}'
 fi
