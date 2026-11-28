@@ -70,3 +70,23 @@ test("subcommand help does not consume or dispatch following arguments", () => {
     rmSync(temp, { recursive: true, force: true })
   }
 })
+
+test("the end-of-options marker preserves literal option-looking arguments", () => {
+  const temp = mkdtempSync(path.join(tmpdir(), "neura-option-end-"))
+  try {
+    const entry = path.join(root, "src/cli.ts")
+    const list = ["connector", "list", "--plugin", "missing-fixture"]
+    const ordinary = invoke(entry, list, temp)
+    assert.equal(ordinary.status, 0)
+    assert.equal(ordinary.stdout, "")
+    assert.match(ordinary.stderr, /catalog \(missing-fixture\)/)
+    for (const token of ["--help", "-h", "--json"]) {
+      assert.deepEqual(invoke(entry, [...list, "--json", "--", token], temp),
+        { status: 0, stdout: "null\n", stderr: "" }, token)
+    }
+    assert.deepEqual(invoke(entry, [...list, "--", "--json"], temp), ordinary)
+    assert.deepEqual(invoke(entry, [...list, "--help", "--", "literal"], temp), invoke(entry, ["help"], temp))
+  } finally {
+    rmSync(temp, { recursive: true, force: true })
+  }
+})
