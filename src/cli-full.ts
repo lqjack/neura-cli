@@ -76,7 +76,10 @@ function parseArgs(argv: string[], captureSub = true): Parsed {
   if (captureSub && rest[0] && !rest[0].startsWith("-")) sub = rest.shift()
   for (let i = 0; i < rest.length; i++) {
     const a = rest[i]!
-    if (a.startsWith("--")) {
+    if (a === "--help" || a === "-h") {
+      // A help request never takes a value or dispatches the command.
+      flags.help = true
+    } else if (a.startsWith("--")) {
       const key = a.slice(2)
       const next = rest[i + 1]
       if (next && !next.startsWith("-")) { flags[key] = next; i++ } else flags[key] = true

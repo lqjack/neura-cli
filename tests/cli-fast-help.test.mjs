@@ -47,3 +47,26 @@ test("nonfast arguments retain the full entry's behavior", () => {
     rmSync(temp, { recursive: true, force: true })
   }
 })
+
+test("subcommand help does not consume or dispatch following arguments", () => {
+  const temp = mkdtempSync(path.join(tmpdir(), "neura-subcommand-help-"))
+  try {
+    const entry = path.join(root, "src/cli.ts")
+    const expected = invoke(entry, ["help"], temp)
+    assert.equal(expected.status, 0)
+    assert.equal(expected.stderr, "")
+    assert.match(expected.stdout, /NeuraCLI/)
+    for (const args of [
+      ["connector", "list", "--help", "fixture"],
+      ["connector", "--help", "list"],
+      ["connector", "list", "-h"],
+      ["connector", "-h", "list"],
+    ]) {
+      assert.deepEqual(invoke(entry, args, temp), expected, args.join(" "))
+    }
+    assert.deepEqual(invoke(entry, ["connector", "list", "--plugin", "missing-fixture", "--json"], temp),
+      { status: 0, stdout: "null\n", stderr: "" })
+  } finally {
+    rmSync(temp, { recursive: true, force: true })
+  }
+})
