@@ -181,11 +181,57 @@ PATH. Direct launch (not via an explicitly selected dynamic loader) returned
 `libgcc_s.so.1` made the same launch exit 127 with zero stdout and a missing
 library diagnostic. No new runtime was installed.
 
-Not run: glibc 2.34 floor, an older glibc distro, musl, or another OS or
-architecture. Before distributing a native Linux build, choose the supported
-libc/architecture matrix, check symbol versions on the **packaged** artifact,
-and exercise exact help/output on the oldest supported clean target without
-Node or Bun. Do not claim general Linux portability from this same-host test.
+### Paired older-userspace replay
+
+Reused the exact native binary above, without rebuilding. On the same x86-64
+Linux 6.18.57 kernel we ran two minimal, separately extracted distro userspaces.
+APT validated the signed vendor indexes and package hashes before extraction.
+At execution the distro root and fixture stage were mounted read-only inside
+Bubblewrap, with private temporary storage, a synthetic working directory and
+HOME, a cleared environment, and socket creation/connect denied. There were no
+host-library mounts or service calls. These are userspace tests, not guest-OS
+boots, ISA compatibility tests, or certifications for a target distro.
+
+| Extracted amd64 userspace | Native positional `help` | Installed Node/Bun CLI |
+| --- | --- | --- |
+| Debian Bullseye, `libc6 2.31-13+deb11u11`, `libgcc-s1 10.2.1-6` | Exit 1, zero stdout; loader reports missing `GLIBC_2.32`, `GLIBC_2.33` and `GLIBC_2.34` | `help`, `--help`, `-h` and synthetic local catalog all pass |
+| Ubuntu Impish archive, `libc6 2.34-0ubuntu3.2`, `libgcc-s1 11.2.0-7ubuntu2` | Exit 0, exact 3,251 stdout bytes, empty stderr | Same four cases pass |
+
+The control is the offline npm-installed composition of #1/#5/#6, using the
+actual `node_modules/.bin/neura` entry (Node 24.22.3 and Bun 1.3.5), not an
+unpacked bundle or a replacement launcher. The measured composition used
+main `6b528dd36fd08ee1f084156c9edd5824aa891e02`, #1 `4fed909`,
+#5 `b3b008c`, and #6 `275737d` (tree
+`48452366d20a680a1640a63b3e58f3b2b1cd144a`). The npm pack SHA-256 is
+`51e9fcd36fa4d3b32ba721d33f6f8208fbe1ac18d2f09b49acdc652d90b2bb6b`.
+Each passing help variant had the same stdout hash
+`63ac9e24f850994f8a652353384aa147e6ea52b7dda455ffd741bff8e9fc29f0`.
+The installed `connector list --plugin local-probe --json` opened a synthetic
+bundled YAML catalog and returned the expected 254-byte JSON (SHA-256
+`d2e18ed604342e28d719164bb911b11af625ee924df7442b2766c387ecc0f298`);
+the native binary on 2.34 correctly rejected that unsupported command with
+exit 2. Check the actual launch rather than only `ld.so --list`: the Bullseye
+loader listed dependencies and returned 0 despite emitting version errors.
+
+For an offline recheck, pin the package sources and hashes, extract each
+set into its own directory without installing it, and expose only that
+userspace and an isolated stage containing the exact artifacts and fixture
+above. Inspect the distro libc and dependency paths inside the sandbox, then
+run both commands directly via their actual entry points and capture exit,
+stdout bytes and stderr. The libc package hashes were
+`05f7264da867b37f4c5ce49266b558ea1e81e05a9464f623152fca70f3550282`
+(Bullseye) and `2d0509f10c42ad55da3e4ec721288ca6afa7e2db13eaf7a4b7f819e4d4ef3e47`
+(Impish). The applicable signed archive indexes came from
+[Debian Bullseye](https://deb.debian.org/debian/dists/bullseye/InRelease)
+and [Ubuntu Impish updates](https://old-releases.ubuntu.com/ubuntu/dists/impish-updates/InRelease).
+Impish is an archived fixture, not a suggested deployment target.
+
+**Decision:** this binary would fail on a tested glibc 2.31 userspace where
+the installed CLI works. Keep Rust opt-in. If 2.31 is part of the supported
+floor, build a compatible native artifact and repeat the packaged install/run
+check before considering a default switch. Other glibc builds, musl, CPU
+generations, macOS, Windows, and real installed-host distribution remain
+unverified. No published package or default entry changed.
 
 ## Next decision
 
