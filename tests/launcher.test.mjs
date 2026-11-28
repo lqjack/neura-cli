@@ -12,9 +12,9 @@ const posix = process.platform === "win32" ? { skip: "POSIX executable fixture" 
 function run(commands, args = ["help"]) {
   const dir = mkdtempSync(path.join(tmpdir(), "neura-launcher-"))
   try {
-    for (const [name, [body, mode = 0o755]] of Object.entries(commands)) {
+    for (const [name, [body, mode = 0o755, interpreter = "/bin/sh"]] of Object.entries(commands)) {
       const file = path.join(dir, name)
-      writeFileSync(file, "#!/bin/sh\n" + body)
+      writeFileSync(file, `#!${typeof interpreter === "function" ? interpreter(dir) : interpreter}\n` + body)
       chmodSync(file, mode)
     }
     const r = spawnSync(process.execPath, [launcher, ...args], {
@@ -36,9 +36,20 @@ for (const code of [0, 1, 2]) {
   })
 }
 
-test("only absent Bun falls back and forwards the original arguments", posix, () => {
+test("absent Bun falls back and forwards the original arguments", posix, () => {
   const out = run({ bunx: ['[ "$1" = bun ] && [ -z "${4-}" ] && [ "$3" = "two words" ] || exit 97; echo fallback; exit 2'] }, ["two words"])
   assert.equal(out.status, 2)
+  assert.equal(out.stdout, "fallback\n")
+  assert.equal(out.stderr, "")
+})
+
+test("Bun with a missing interpreter falls back on spawn ENOENT", posix, () => {
+  const out = run({
+    bun: ["echo must-not-run; exit 99", 0o755, dir => path.join(dir, "missing-interpreter")],
+    bunx: ['[ "$1" = bun ] && [ "$3" = "two words" ] && [ -z "${4-}" ] || exit 97; echo fallback; exit 2'],
+  }, ["two words"])
+  assert.equal(out.status, 2)
+  assert.equal(out.signal, null)
   assert.equal(out.stdout, "fallback\n")
   assert.equal(out.stderr, "")
 })
