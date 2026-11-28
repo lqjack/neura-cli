@@ -201,3 +201,29 @@ lqjack/neura-os#1220 publication or #1217 production routing.
 
 Rust optimization reference:
 [The rustc book — Codegen Options](https://doc.rust-lang.org/rustc/codegen-options/index.html).
+
+## Linux output-sink parity
+
+On the pinned Linux builds above (one native executable and the main and
+lightweight archives, each via the installed wrapper and direct Bun), one normal
+`help` per entry returned 0, no stderr and the same 3,251 stdout bytes. Five
+fresh attempts per entry per failure mode produced:
+
+| Stdout sink | Native Rust | Main and lightweight, both entry points |
+| --- | --- | --- |
+| Pipe with its read end already closed | Exit 0, no stderr | Exit 0, no stderr |
+| Linux `/dev/full` | Exit 1; reports `No space left on device (os error 28)` to stderr | Exit 0, no stderr |
+
+No disk was filled. To replay offline, for each **absolute** command prefix use
+a fresh empty current directory and clean HOME, with the matching Node/Bun on
+PATH. In Python, use either `read_fd, fd = os.pipe(); os.close(read_fd)` or
+`fd = os.open('/dev/full', os.O_WRONLY)`, then run
+`subprocess.run([*cmd, 'help'], stdout=fd, stderr=subprocess.PIPE, env=env, cwd=cwd, timeout=5)`
+and close `fd` in a `finally` block. Compare both return code and stderr;
+use `stdout=subprocess.PIPE` for the normal byte control.
+
+A deliberate pipe close is quiet in both builds. A hard output failure is not
+exit-status compatible; the native experiment surfaces it. Keep the experiment
+optional. Before replacing the default, explicitly decide and test which
+output-error contract to support rather than silently changing it. This only
+covers the Linux `help` path; no packaging, runtime default, or release change.
